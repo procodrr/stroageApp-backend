@@ -15,6 +15,7 @@
   "description": "",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.864.0",
+    "@aws-sdk/cloudfront-signer": "^3.910.0",
     "@aws-sdk/s3-request-presigner": "^3.864.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
@@ -23,6 +24,9 @@
     "google-auth-library": "^9.15.1",
     "mime-types": "^3.0.1",
     "mongoose": "^8.12.1",
+    "razorpay": "^2.9.6",
+    "redis": "^5.8.3",
+    "resend": "^6.2.0",
     "zod": "^3.25.67"
   },
   "devDependencies": {
