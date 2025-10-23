@@ -28,6 +28,10 @@ app.get("/", (req, res) => {
   res.json({ message: "Hello from StorageApp!" });
 });
 
+app.get("/err", (req, res) => {
+  console.log(object);
+});
+
 app.use("/directory", checkAuth, directoryRoutes);
 app.use("/file", checkAuth, fileRoutes);
 app.use("/subscriptions", checkAuth, subscriptionRoutes);
