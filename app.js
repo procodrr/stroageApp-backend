@@ -40,5 +40,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server Started`);
 });
-
-// https://stackoverflow.com/questions/18367824/how-to-cancel-http-upload-from-data-events
