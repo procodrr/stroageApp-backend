@@ -29,7 +29,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/err", (req, res) => {
-  console.log(object);
+  console.log("process exited with error");
+  process.exit(1);
 });
 
 app.use("/directory", checkAuth, directoryRoutes);
