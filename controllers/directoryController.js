@@ -113,12 +113,8 @@ export const deleteDirectory = async (req, res, next) => {
     const keys = files.map(({ _id, extension }) => ({
       Key: `${_id}${extension}`,
     }));
-
-    console.log(keys);
-
-    const response = await deleteS3Files(keys);
-
-    console.log(response);
+    
+    if (keys.length) await deleteS3Files(keys);
 
     await File.deleteMany({
       _id: { $in: files.map(({ _id }) => _id) },
