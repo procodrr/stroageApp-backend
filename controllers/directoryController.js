@@ -130,7 +130,8 @@ export const deleteDirectory = async (req, res, next) => {
 
     await updateDirectoriesSize(directoryData.parentDirId, -directoryData.size);
   } catch (err) {
-    next(err);
+    console.log(err);
+    return next(err);
   }
   return res.json({ message: "Files deleted successfully" });
 };
