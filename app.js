@@ -22,9 +22,9 @@ app.use(express.json());
 const whitelist = [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2];
 
 app.use((req, res, next) => {
-	console.log(req.headers)
-	next()
-})
+  console.log(req.headers);
+  next();
+});
 
 app.use(
   cors({
@@ -41,6 +41,9 @@ app.use(
 );
 
 app.post("/github-webhook", (req, res) => {
+  console.log(req.headers);
+  console.log(req.body);
+  
   const bashChildProcess = spawn("bash", ["/home/ubuntu/deploy-frontend.sh"]);
 
   bashChildProcess.stdout.on("data", (data) => {
