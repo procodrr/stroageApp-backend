@@ -9,6 +9,7 @@ import webhookRoutes from "./routes/webhookRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import checkAuth from "./middlewares/authMiddleware.js";
 import { connectDB } from "./config/db.js";
+import { spawn } from "child_process";
 
 await connectDB();
 
@@ -32,6 +33,33 @@ app.use(
     credentials: true,
   })
 );
+
+app.post("/github-webhook", (req, res) => {
+  const bashChildProcess = spawn("bash", ["/home/ubuntu/deploy-frontend.sh"]);
+
+  bashChildProcess.stdout.on("data", (data) => {
+    process.stdout.write(data);
+  });
+
+  bashChildProcess.stderr.on("data", (data) => {
+    process.stderr.write(data);
+  });
+
+  bashChildProcess.on("close", (code) => {
+    res.json({ message: "OK" });
+    if (code === 0) {
+      console.log("Script executed successfully!");
+    } else {
+      console.log("Script failed!");
+    }
+  });
+
+  bashChildProcess.on("error", (err) => {
+    res.json({ message: "OK" });
+    console.log("Error in spawning the process!");
+    console.log(err);
+  });
+});
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello from StorageApp!" });
