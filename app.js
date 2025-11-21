@@ -10,6 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import checkAuth from "./middlewares/authMiddleware.js";
 import { connectDB } from "./config/db.js";
 import { spawn } from "child_process";
+import crypto from "crypto";
 
 await connectDB();
 
@@ -35,11 +36,25 @@ app.use(
 );
 
 app.post("/github-webhook", (req, res) => {
-  
+  const givenSignature = req.headers["X-Hub-Signature-256"];
+  if (!givenSignature) {
+    return res.status(403).json({ error: "Invalid Signature" });
+  }
+  const calculatedSignature =
+    "sha256=" +
+    crypto
+      .createHmac("sha256", "anurag@123")
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+
+  if (givenSignature !== calculatedSignature) {
+    return res.status(403).json({ error: "Invalid Signature" });
+  }
+
   res.json({ message: "OK" });
-  
+
   const bashChildProcess = spawn("bash", ["/home/ubuntu/deploy-frontend.sh"]);
-  
+
   bashChildProcess.stdout.on("data", (data) => {
     process.stdout.write(data);
   });
