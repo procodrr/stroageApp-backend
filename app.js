@@ -35,8 +35,11 @@ app.use(
 );
 
 app.post("/github-webhook", (req, res) => {
+  
+  res.json({ message: "OK" });
+  
   const bashChildProcess = spawn("bash", ["/home/ubuntu/deploy-frontend.sh"]);
-
+  
   bashChildProcess.stdout.on("data", (data) => {
     process.stdout.write(data);
   });
@@ -46,7 +49,6 @@ app.post("/github-webhook", (req, res) => {
   });
 
   bashChildProcess.on("close", (code) => {
-    res.json({ message: "OK" });
     if (code === 0) {
       console.log("Script executed successfully!");
     } else {
@@ -55,7 +57,6 @@ app.post("/github-webhook", (req, res) => {
   });
 
   bashChildProcess.on("error", (err) => {
-    res.json({ message: "OK" });
     console.log("Error in spawning the process!");
     console.log(err);
   });
