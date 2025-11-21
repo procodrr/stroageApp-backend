@@ -53,7 +53,18 @@ app.post("/github-webhook", (req, res) => {
 
   res.json({ message: "OK" });
 
-  const bashChildProcess = spawn("bash", ["/home/ubuntu/deploy-frontend.sh"]);
+  let repository;
+  if (req.body.repository.name === "stroageApp-frontend") {
+    repository = "frontend";
+  } else {
+    repository = "backend";
+  }
+
+  console.log({ repository });
+
+  const bashChildProcess = spawn("bash", [
+    `/home/ubuntu/deploy-${repository}.sh`,
+  ]);
 
   bashChildProcess.stdout.on("data", (data) => {
     process.stdout.write(data);
