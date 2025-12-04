@@ -1,0 +1,42 @@
+name: Deploy StorageApp Backend
+
+on: [push, workflow_dispatch]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SSH_HOST: 13.203.175.237
+      SSH_USER: ubuntu
+      REMOTE_APP_DIR: /home/ubuntu/stroageApp-backend
+      PM2_APP_NAME: storageApp
+
+    steps:
+      # 1. Setup SSH key and known_hosts
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add server host key so SSH does not ask for confirmation
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      # 2. Deploy to remote server
+      - name: Deploy backend on EC2
+        run: |
+          ssh "${SSH_USER}@${SSH_HOST}" 'bash -s' << 'EOF'
+            set -e
+
+            cd /home/ubuntu/stroageApp-backend
+            git pull
+
+            echo "Installing backend dependencies (npm ci)..."
+            npm ci --no-audit --no-fund
+
+            echo "Reloading PM2 app..."
+            pm2 reload storageApp
+
+            echo "Backend Deployed Successfully..."
+          EOF
